@@ -1,0 +1,71 @@
+package Maven_examples;
+
+import java.util.concurrent.TimeoutException;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import com.google.protobuf.Duration;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
+
+
+
+public class positive_negative_registration {
+
+	public static void main(String[] args) {
+		
+		
+		WebDriverManager.firefoxdriver().setup();
+		System.out.println("driver set up done");
+		WebDriver driver = new FirefoxDriver();
+		driver.navigate().to("https://www.mycontactform.com/signup.php");
+		WebElement clicksignin = driver.findElement(By.xpath("//*[@id=\"right_col_middle\"]"));
+		
+		clicksignin.click();
+		//WebElement name = 
+		driver.findElement(By.name("name")).sendKeys("luffy");
+		driver.findElement(By.name("email")).sendKeys("luffy368@gmail.com");
+		driver.findElement(By.name("user_signup")).sendKeys("luffy@examplgemail.com");
+		driver.findElement(By.name("Submit")).click();
+		WebDriverManager.firefoxdriver().setup();
+		System.out.println("driver set up done");
+		
+		driver.get("https://www.mycontactform.com/signup.php");
+
+		// Fill form fields
+		driver.findElement(By.name("name")).sendKeys("luffy");
+		driver.findElement(By.name("email")).sendKeys("luffy368@gmail.com");
+		driver.findElement(By.name("user_signup")).sendKeys("luffy@examplgemail.com");
+
+		// Click submit to trigger validation
+		driver.findElement(By.name("btn_submit")).click(); // Use actual submit button name or id
+
+		// Wait for the error message to appear (if dynamic)
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+
+
+		try {
+		    WebElement nameError = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[@class='error']")));
+		    System.out.println("Validation message: " + nameError.getText());
+		} catch (TimeoutException e) {
+		    System.out.println("No validation error displayed.");
+		}
+
+		
+		
+		//driver.findElement(By.name("pass_signup")).sendKeys("test_1234");
+		//driver.findElement(By.name("pass2")).sendKeys("test_1234");
+		//driver.findElement(By.name("useragree")).click();
+		//driver.findElement(By.name("Submit")).click();
+
+
+		
+;
+	}
+
+}

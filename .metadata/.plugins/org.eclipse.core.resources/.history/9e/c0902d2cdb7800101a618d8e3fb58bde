@@ -1,0 +1,30 @@
+package Maven_examples;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import io.github.bonigarcia.wdm.WebDriverManager;
+
+public class RentalFormNegativeTest {
+    public static void main(String[] args) {
+        WebDriverManager.firefoxdriver().setup();
+        WebDriver driver = new FirefoxDriver();
+        driver.get("https://www.mycontactform.com/samples/rental.php");
+
+        // Submit without entering any data
+        driver.findElement(By.name("submit")).click();
+
+        // Wait briefly and check resulting page content
+        String pageText = driver.getPageSource();
+
+        if (pageText.contains("Please fill out all required fields") ||
+            pageText.contains("There was a problem with your submission")) {
+            System.out.println("Form submission failed as expected due to missing data.");
+        } else {
+            System.out.println("Unexpected behavior: form may have submitted without validation.");
+        }
+
+        //driver.quit();
+    }
+}
+

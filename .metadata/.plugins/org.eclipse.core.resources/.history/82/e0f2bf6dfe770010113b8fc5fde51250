@@ -1,0 +1,37 @@
+package Maven_examples;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
+
+public class My_Contactform_Register_Users {
+
+	public static void main(String[] args) {
+		WebDriverManager.firefoxdriver().setup();
+		System.out.print("driver setuped");
+		WebDriver driver = new FirefoxDriver();
+		driver.navigate().to("https://www.mycontactform.com/signup.php");
+		System.out.println("website opened");
+		System.out.println(driver.getTitle());
+		driver.findElement(By.name("name")).sendKeys("John Doe");         // Name
+        driver.findElement(By.name("email")).sendKeys("johndoe@example.com"); // Email
+        driver.findElement(By.name("user_signup")).sendKeys("john_doe123");  // Username
+        driver.findElement(By.name("pass_signup")).sendKeys("Test@12345");   // Password
+        driver.findElement(By.name("pass2")).sendKeys("Test@12345"); // Retype password
+
+        // Click checkbox to confirm
+        WebElement checkbox = driver.findElement(By.name("agree"));
+        if (!checkbox.isSelected()) {
+            checkbox.click();}
+        driver.findElement(By.name("submit")).click();
+        System.out.println("Form submitted");
+        }
+		
+
+	}
+
+

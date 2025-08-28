@@ -1,0 +1,57 @@
+package test_ng;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+import io.github.bonigarcia.wdm.WebDriverManager;
+
+public class testngex1 {
+
+    WebDriver driver;
+
+    @BeforeMethod
+    public void setUp() {
+        WebDriverManager.firefoxdriver().setup();
+        driver = new FirefoxDriver();
+        driver.get("https://www.mycontactform.com/");
+    }
+
+    @Test
+    public void verifyTitleAndLogin() {
+        String actualTitle = driver.getTitle();
+        System.out.println("Page Title: " + actualTitle);
+
+        // Verify page title contains expected keyword
+        Assert.assertTrue(
+            actualTitle.contains("myContactForm.com"),
+            "Page title did not contain expected text!"
+        );
+
+        // Locate username and password fields (replace IDs/names if different)
+        WebElement usernameField = driver.findElement(By.id("user")); // example id
+        WebElement passwordField = driver.findElement(By.id("pass")); // example id
+        WebElement loginButton = driver.findElement(By.name("btnSubmit")); // example name
+
+        // Insert your credentials
+        usernameField.sendKeys("qtrainer");
+        passwordField.sendKeys("admin123");
+
+        // Click login
+        loginButton.click();
+
+        // Optional: Verify successful login by checking some element visible after login
+        
+    }
+
+    @AfterMethod
+    public void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
+    }
+}

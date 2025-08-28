@@ -1,0 +1,27 @@
+package test_ng;
+import org.testng.annotations.Test;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+
+import com.sun.tools.javac.util.Assert;
+
+public class testngex1 {
+	@BeforeMethod
+    public void setup() {
+        // use your BrowserFactory class to launch firefox and go to site
+        driver = BrowserFactory.startBrowser("firefox", "https://www.mycontactform.com/");
+    }
+
+    @Test
+    public void verifyTitle() {
+        String expected = "Free Contact Form Builder | MyContactForm.com";
+        String actual = driver.getTitle();
+        Assert.assertEquals(actual, expected, "Page title did not match!");
+    }
+
+    @AfterMethod
+    public void teardown() {
+        BrowserFactory.closeBrowser();
+
+}
+}

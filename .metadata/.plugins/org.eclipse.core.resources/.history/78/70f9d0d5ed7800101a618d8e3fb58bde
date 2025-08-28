@@ -1,0 +1,60 @@
+package Maven_examples;
+
+import org.openqa.selenium.*;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.*;
+import io.github.bonigarcia.wdm.WebDriverManager;
+
+import java.time.Duration;
+
+public class contact_rental_ex {
+    public static void main(String[] args) {
+        // Setup Firefox Driver
+        WebDriverManager.firefoxdriver().setup();
+        WebDriver driver = new FirefoxDriver();
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+
+        try {
+            driver.get("https://www.mycontactform.com/samples/rental.php");
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+            // Switch into the iframe containing the rental form
+            wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(0));
+
+            // Enter invalid First Name
+            WebElement firstName = wait.until(ExpectedConditions.elementToBeClickable(By.name("q1")));
+            firstName.clear();
+            firstName.sendKeys("1234");
+            System.out.println("Entered invalid first name: 1234");
+
+            // Leave "Smoker?" radio buttons unselected
+            System.out.println("No radio button selected for 'Smoker?'");
+
+            // Ensure "Pets?" checkbox is unchecked
+            WebElement petsCheckbox = driver.findElement(By.name("q20[]"));
+            if (petsCheckbox.isSelected()) {
+                petsCheckbox.click();
+            }
+            System.out.println("Checkbox for 'Pets?' left unchecked");
+
+            // Leave Email empty
+            WebElement emailField = driver.findElement(By.name("email"));
+            emailField.clear();
+            System.out.println("Email left empty");
+
+            // Submit the form
+            WebElement submitButton = driver.findElement(By.name("submit"));
+            submitButton.click();
+            System.out.println("Form submitted");
+
+            // Wait for and print validation errors
+            WebElement errorBox = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("error_box")));
+            System.out.println("Validation errors:\n" + errorBox.getText());
+
+        } catch (Exception e) {
+            System.out.println("Validation error not found or unexpected issue: " + e.getMessage());
+        } finally {
+            driver.quit();
+        }
+    }
+}

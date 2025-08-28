@@ -1,0 +1,34 @@
+package Maven_examples;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+
+public class contact_rental_ex {
+    public static void main(String[] args) throws InterruptedException {
+        // Setup WebDriver
+        System.setProperty("webdriver.gecko.driver", "C:\\path\\to\\geckodriver.exe");
+        WebDriver driver = new FirefoxDriver();
+
+        // Open rental form page
+        driver.get("https://www.mycontactform.com/samples/rental.php");
+        driver.manage().window().maximize();
+
+        // Click submit without selecting any radio option
+        driver.findElement(By.name("submit")).click();
+
+        // Wait briefly to see validation message
+        Thread.sleep(2000);
+
+        // Get and print the validation/error text
+        try {
+            String errorText = driver.findElement(By.xpath("//font[@color='red']")).getText();
+            System.out.println("Validation Message: " + errorText);
+        } catch (Exception e) {
+            System.out.println("No validation message found. Locator may need update.");
+        }
+
+        // Close browser
+        driver.quit();
+    }
+}

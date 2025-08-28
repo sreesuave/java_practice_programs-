@@ -1,0 +1,64 @@
+package Maven_examples;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+
+import Apputils.DBConnection;
+import io.github.bonigarcia.wdm.WebDriverManager;
+
+public class My_Contactform_Register_Users {
+
+    public static void main(String[] args) {
+        WebDriverManager.firefoxdriver().setup();
+        WebDriver driver = new FirefoxDriver();
+
+        try (Connection conn = DBConnection.getConnection()) {
+            System.out.println("Database connected");
+
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT userid, password FROM UserLoginDetails");
+
+            while (rs.next()) {
+                String username = rs.getString("userid");
+                String password = rs.getString("password");
+
+                // Go to login page for each user
+                driver.navigate().to("https://www.mycontactform.com/index.php");
+                System.out.println("Opened login page for: " + username);
+
+                driver.findElement(By.name("user")).clear();
+                driver.findElement(By.name("user")).sendKeys(username);
+
+                driver.findElement(By.name("pass")).clear();
+                driver.findElement(By.name("pass")).sendKeys(password);
+                
+
+                driver.findElement(By.name("btnSubmit")).click();
+                if(driver.getPageSource().contains("logout"))
+                {
+                	 driver.findElement(By.name("logoffSubmit")).click();
+                }
+Thread.sleep(3000);
+
+                System.out.println("Tried login with: " + username + " / " + password);
+                
+            
+           
+        	   
+        	   }
+
+            rs.close();
+            stmt.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            driver.quit();
+        }
+    }
+}

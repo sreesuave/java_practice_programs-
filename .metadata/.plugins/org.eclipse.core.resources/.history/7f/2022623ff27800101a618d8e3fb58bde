@@ -1,0 +1,67 @@
+package Maven_examples;
+
+import org.openqa.selenium.*;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.*;
+
+import java.time.Duration;
+
+public class contact_rental_ex {
+    public static void main(String[] args) {
+        WebDriver driver = new ChromeDriver();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        try {
+            driver.get("https://www.mycontactform.com/samples/rental.php");
+            driver.manage().window().maximize();
+
+            // Wait for form to load
+            Thread.sleep(3000); // crude wait to ensure JS-rendered form loads
+
+            // Fill text fields using XPath based on label text
+            driver.findElement(By.xpath("//input[@type='text' and @size='10']")).sendKeys("Mr."); // Prefix
+            driver.findElement(By.xpath("//input[@type='text' and @size='25']")).sendKeys("SREE"); // First Name
+            driver.findElement(By.xpath("(//input[@type='text' and @size='25'])[2]")).sendKeys("Kumar"); // Last Name
+            driver.findElement(By.xpath("//input[@type='text' and @size='30']")).sendKeys("sree@example.com"); // Email
+            driver.findElement(By.xpath("//input[@type='text' and @size='15']")).sendKeys("9876543210"); // Phone
+
+            // Radio buttons
+            driver.findElement(By.xpath("//input[@type='radio' and @value='Yes']")).click(); // Smoker
+            driver.findElement(By.xpath("//input[@type='radio' and @value='Phone']")).click(); // Preferred Contact Method
+            driver.findElement(By.xpath("//input[@type='radio' and @value='Morning']")).click(); // Preferred Contact Time
+
+            // Dropdowns
+            new Select(driver.findElement(By.name("q9"))).selectByVisibleText("Apartment");
+            new Select(driver.findElement(By.name("q10"))).selectByVisibleText("Condo");
+            new Select(driver.findElement(By.name("q11"))).selectByVisibleText("2");
+            new Select(driver.findElement(By.name("q12"))).selectByVisibleText("1.5");
+
+            // Checkboxes
+            driver.findElement(By.xpath("//input[@type='checkbox' and @value='Dog']")).click();
+            driver.findElement(By.xpath("//input[@type='checkbox' and @value='Cat']")).click();
+
+            // Date picker
+            driver.findElement(By.name("q14")).sendKeys("08/31/2025");
+
+            // Numeric fields
+            driver.findElement(By.name("q15")).sendKeys("10000");
+            driver.findElement(By.name("q16")).sendKeys("1200");
+
+            // Preferred Area
+            driver.findElement(By.name("q17")).sendKeys("Hyderabad");
+
+            // Comments
+            driver.findElement(By.name("q18")).sendKeys("Looking for a quiet neighborhood with good amenities.");
+
+            // Submit
+            driver.findElement(By.name("submit")).click();
+
+            System.out.println("✅ Form submitted successfully!");
+
+        } catch (Exception e) {
+            System.out.println("❌ Error: " + e.getMessage());
+        } finally {
+            driver.quit();
+        }
+    }
+}

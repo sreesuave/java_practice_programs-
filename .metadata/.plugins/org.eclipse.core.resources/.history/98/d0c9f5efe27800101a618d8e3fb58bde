@@ -1,0 +1,59 @@
+package Maven_examples;
+
+import org.openqa.selenium.*;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.*;
+
+import java.time.Duration;
+
+public class contact_rental_ex{
+    public static void main(String[] args) {
+        WebDriver driver = new FirefoxDriver();
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
+        driver.get("https://your-form-url.com"); // Replace with your actual form URL
+
+        try {
+            // ❌ Invalid Input in Text Field (e.g., name field)
+            WebElement nameField = driver.findElement(By.name("name"));
+            nameField.clear();
+            nameField.sendKeys("1234"); // Invalid input
+            System.out.println("Entered invalid name: 1234");
+
+            // 🔘 Radio Button Not Selected
+            // Assuming radio buttons have name 'gender' and none are selected
+            System.out.println("No radio button selected for gender");
+
+            // ✅ Checkbox Not Selected
+            WebElement checkbox = driver.findElement(By.name("agree_terms"));
+            if (checkbox.isSelected()) {
+                checkbox.click(); // Ensure it's unchecked
+            }
+            System.out.println("Checkbox 'agree_terms' left unchecked");
+
+            // Submit the form
+            driver.findElement(By.name("submit")).click();
+
+            // Wait for validation messages
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+
+            // Capture and print validation errors
+            WebElement nameError = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//*[contains(text(),'name')]")));
+            System.out.println("Name field error: " + nameError.getText());
+
+            WebElement radioError = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//*[contains(text(),'gender')]")));
+            System.out.println("Radio button error: " + radioError.getText());
+
+            WebElement checkboxError = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//*[contains(text(),'terms')]")));
+            System.out.println("Checkbox error: " + checkboxError.getText());
+
+        } catch (Exception e) {
+            System.out.println("Validation error not found or unexpected issue: " + e.getMessage());
+        } finally {
+            driver.quit();
+        }
+    }
+}
+

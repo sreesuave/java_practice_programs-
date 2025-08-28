@@ -1,0 +1,24 @@
+package sample_selinium;
+
+
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import java.util.*;  // Only if you're using utility classes
+
+public class Selinium_Ex {
+    public static void main(String[] args) {
+        // Specify the full path to your chromedriver.exe
+    	System.setProperty("webdriver.chrome.driver",
+    		    "D:\\java_Selinium\\selinium_practice\\src");
+
+
+        WebDriver driver = new ChromeDriver();
+
+        // Example action to verify setup
+        driver.get("https://www.example.com");
+        System.out.println("Page Title: " + driver.getTitle());
+
+        driver.quit();
+    }
+}

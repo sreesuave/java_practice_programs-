@@ -1,0 +1,53 @@
+package Maven_examples;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import io.github.bonigarcia.wdm.WebDriverManager;
+import java.util.List;
+
+public class positive_negative_registration {
+
+    public static void main(String[] args) {
+
+        // Setup driver
+        WebDriverManager.firefoxdriver().setup();
+        WebDriver driver = new FirefoxDriver();
+        driver.get("https://www.mycontactform.com/signup.php");
+
+        try {
+            // Optional: click sign-in section if needed
+            WebElement clicksignin = driver.findElement(By.xpath("//*[@id=\"right_col_middle\"]"));
+            clicksignin.click();
+
+            // Fill form fields (negative test)
+            driver.findElement(By.name("name")).sendKeys("luffy");
+            driver.findElement(By.name("email")).sendKeys("luffy368@gmail.com");
+            driver.findElement(By.name("user_signup")).sendKeys("luffy@examplgemail.com");
+            driver.findElement(By.name("pass_signup")).sendKeys("luffy@examplgemail.com");
+            driver.findElement(By.name("pass2")).sendKeys("luffy@examplgemail.com");
+
+
+            
+
+            // Click submit to trigger validation
+            driver.findElement(By.name("Submit")).click(); // adjust button name/id
+
+            // Find all error messages in <span class='error'>
+            List<WebElement> errors = driver.findElements(By.xpath("//span[@class='error']"));
+
+            if (errors.isEmpty()) {
+                System.out.println("No validation errors found.");
+            } else {
+                for (WebElement e : errors) {
+                    System.out.println("Validation message: " + e.getText());
+                }
+            }
+
+        } finally {
+            // Close the browser
+           // driver.quit();
+        }
+    }
+}

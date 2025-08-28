@@ -1,0 +1,75 @@
+package Maven_examples;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import io.github.bonigarcia.wdm.WebDriverManager;
+import java.util.List;
+
+public class PositiveNegativeRegistration {
+
+    public static void main(String[] args) {
+
+        // Setup Firefox driver
+        WebDriverManager.firefoxdriver().setup();
+        WebDriver driver = new FirefoxDriver();
+        driver.get("https://www.mycontactform.com/signup.php");
+
+        try {
+            // Optional: click sign-in section if needed
+            WebElement clicksignin = driver.findElement(By.xpath("//*[@id=\"right_col_middle\"]"));
+            clicksignin.click();
+
+            // --------- Negative Test Cases ---------
+            // 1. Leave all fields blank
+            driver.findElement(By.name("name")).clear();
+            driver.findElement(By.name("email")).clear();
+            driver.findElement(By.name("user_signup")).clear();
+            driver.findElement(By.name("Submit")).click();
+            List<WebElement> invalidFields = driver.findElements(By.cssSelector(":invalid"));
+            for (WebElement field : invalidFields) {
+                System.out.println("Invalid field: " + field.getAttribute("name"));
+            }
+
+            
+
+          /*  // 2. Invalid email format
+            driver.findElement(By.name("name")).sendKeys("Luffy");
+            driver.findElement(By.name("email")).sendKeys("invalidemail"); // invalid
+            driver.findElement(By.name("user_signup")).sendKeys("luffy123");
+            driver.findElement(By.name("Submit")).click();
+            printErrors(driver, "Test Case 2: Invalid email");
+
+            // 3. Short username
+            driver.findElement(By.name("name")).clear();
+            driver.findElement(By.name("email")).clear();
+            driver.findElement(By.name("user_signup")).clear();
+            driver.findElement(By.name("name")).sendKeys("Luffy");
+            driver.findElement(By.name("email")).sendKeys("luffy368@gmail.com");
+            driver.findElement(By.name("user_signup")).sendKeys("a"); // too short
+            driver.findElement(By.name("Submit")).click();
+            printErrors(driver, "Test Case 3: Short username");*/
+
+            // You can add more negative test cases similarly
+
+        } finally {
+            // Close the browser
+            //driver.quit();
+        }
+    }
+
+    // Utility method to print all error messages
+    private static void printErrors(WebDriver driver, String testCase) {
+        System.out.println("=== " + testCase + " ===");
+        List<WebElement> errors = driver.findElements(By.xpath("//span[@class='error']"));
+        if(errors.isEmpty()){
+            System.out.println("No validation errors found.");
+        } else {
+            for(WebElement e : errors){
+                System.out.println("Validation message: " + e.getText());
+            }
+        }
+        System.out.println("============================\n");
+    }
+}

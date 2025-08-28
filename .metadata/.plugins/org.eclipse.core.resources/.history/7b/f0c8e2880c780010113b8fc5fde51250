@@ -1,0 +1,35 @@
+package Maven_examples;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+public class Sql_Write {
+    public static void main(String[] args) {
+        String url = "jdbc:mysql://localhost:3306/test_db";
+        String username = "root";
+        String dbpassword = "admin";
+
+        try {
+            Connection conn = DriverManager.getConnection(url, username, dbpassword);
+            System.out.println("Database connected");
+
+            Statement stmt = conn.createStatement();
+            String sql = "SELECT userid, password FROM UserLoginDetails";
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                System.out.println("UserID: " + rs.getString("userid") +
+                                   " | Password: " + rs.getString("password"));
+            }
+
+            rs.close();
+            stmt.close();
+            conn.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}

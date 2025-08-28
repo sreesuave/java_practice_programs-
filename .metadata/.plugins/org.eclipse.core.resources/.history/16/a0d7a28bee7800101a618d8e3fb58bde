@@ -1,0 +1,77 @@
+package Maven_examples;
+
+import org.openqa.selenium.*;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.*;
+import io.github.bonigarcia.wdm.WebDriverManager;
+
+import java.time.Duration;
+
+public class contact_rental_ex {
+    public static void main(String[] args) {
+        // Setup Firefox Driver
+        WebDriverManager.firefoxdriver().setup();
+        WebDriver driver = new FirefoxDriver();
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+
+        try {
+            driver.get("https://www.mycontactform.com/samples/rental.php");
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+            // FIRST NAME: Locate by label text to avoid old name/id issues
+            WebElement firstName = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//label[contains(text(),'First Name')]/following::input[1]")
+            ));
+            firstName.clear();
+            firstName.sendKeys("1234"); // invalid input
+            System.out.println("Entered invalid first name");
+
+            // LAST NAME: leave empty to trigger error
+            WebElement lastName = driver.findElement(
+                By.xpath("//label[contains(text(),'Last Name')]/following::input[1]")
+            );
+            lastName.clear();
+            System.out.println("Last Name left empty");
+
+            // EMAIL: leave empty to trigger error
+            WebElement emailField = driver.findElement(
+                By.xpath("//label[contains(text(),'E-mail Address')]/following::input[1]")
+            );
+            emailField.clear();
+            System.out.println("Email left empty");
+
+            // PETS? checkbox/radio - try to locate by label
+            try {
+                WebElement petsCheckbox = driver.findElement(
+                    By.xpath("//label[contains(text(),'Pets')]/following::input[@type='checkbox'][1]")
+                );
+                if (petsCheckbox.isSelected()) {
+                    petsCheckbox.click();
+                }
+                System.out.println("Pets? left unchecked");
+            } catch (NoSuchElementException ignore) {
+                System.out.println("'Pets?' field not found as checkbox — may be radio buttons");
+            }
+
+            // SMOKER? leave unselected (no action)
+
+            // SUBMIT
+            WebElement submitButton = driver.findElement(
+                By.xpath("//input[@type='submit' or @name='submit']")
+            );
+            submitButton.click();
+            System.out.println("Form submitted");
+
+            // ERROR BOX
+            WebElement errorBox = wait.until(ExpectedConditions.presenceOfElementLocated(
+                By.id("error_box")
+            ));
+            System.out.println("Validation errors:\n" + errorBox.getText());
+
+        } catch (Exception e) {
+            System.out.println("Issue: " + e.getMessage());
+        } finally {
+            driver.quit();
+        }
+    }
+}

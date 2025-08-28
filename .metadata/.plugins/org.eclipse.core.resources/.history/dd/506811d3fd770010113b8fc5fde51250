@@ -1,0 +1,10 @@
+package Maven_examples;
+
+public class My_Contactform_Register_Users {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

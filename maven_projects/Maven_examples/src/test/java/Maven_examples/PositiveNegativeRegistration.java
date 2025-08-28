@@ -1,0 +1,122 @@
+package Maven_examples;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
+
+import java.time.Duration;
+import java.util.List;
+
+public class PositiveNegativeRegistration {
+
+    public static void main(String[] args) {
+
+        // Setup Firefox driver
+        WebDriverManager.firefoxdriver().setup();
+        WebDriver driver = new FirefoxDriver();
+        driver.get("https://www.mycontactform.com/signup.php");
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+
+        try {
+            System.out.println("Negative test cases :\n");
+
+            // 1️⃣ Null Fields Error
+            System.out.println("Null fields error");
+            System.out.println("=====================");
+            clearFields(driver);
+            driver.findElement(By.name("Submit")).click();
+
+            printValidationMessage(js, driver.findElement(By.name("name")), "Name field");
+            printValidationMessage(js, driver.findElement(By.name("email")), "Email field");
+            driver.navigate().refresh();
+
+            // 2️⃣ Password Mismatch
+            System.out.println("\nPassword mismatch error");
+            System.out.println("=====================");
+            fillForm(driver, "Luffy", "sample@gmail.com", "luffy123", "luffy@12345", "luffy@1234_5");
+            driver.findElement(By.name("useragree")).click();
+            driver.findElement(By.name("Submit")).click();
+
+            printErrorStatus(wait, driver);
+            driver.navigate().refresh();
+
+            // 3️⃣ Duplicate Username
+            System.out.println("\nDuplicate username error");
+            System.out.println("=====================");
+            fillForm(driver, "luffy", "samplemail@gmail.com", "luffy8787", "luffy@12345", "luffy@12345");
+            driver.findElement(By.name("useragree")).click();
+            driver.findElement(By.name("Submit")).click();
+
+            printErrorStatus(wait, driver);
+            driver.navigate().refresh();
+
+            // 4️⃣ Short Username
+            System.out.println("\nShort username error");
+            System.out.println("=====================");
+            fillForm(driver, "Luffy", "luffy368@gmail.com", "a", "luffy@12345", "luffy@12345");
+            driver.findElement(By.name("useragree")).click();
+            driver.findElement(By.name("useragree")).click();
+
+            driver.findElement(By.name("Submit")).click();
+
+            printErrors(driver, "Short username");
+
+        } finally {
+            // Close the browser
+            driver.quit();
+        }
+    }
+
+    // 🔁 Utility method to clear fields
+    private static void clearFields(WebDriver driver) {
+        driver.findElement(By.name("name")).clear();
+        driver.findElement(By.name("email")).clear();
+        driver.findElement(By.name("user_signup")).clear();
+        driver.findElement(By.name("pass_signup")).clear();
+        driver.findElement(By.name("pass2")).clear();
+    }
+
+    // 🔁 Utility method to fill form
+    private static void fillForm(WebDriver driver, String name, String email, String username, String pass1, String pass2) {
+        clearFields(driver);
+        driver.findElement(By.name("name")).sendKeys(name);
+        driver.findElement(By.name("email")).sendKeys(email);
+        driver.findElement(By.name("user_signup")).sendKeys(username);
+        driver.findElement(By.name("pass_signup")).sendKeys(pass1);
+        driver.findElement(By.name("pass2")).sendKeys(pass2);
+    }
+
+    // 🔍 Utility method to print validation message using JS
+    private static void printValidationMessage(JavascriptExecutor js, WebElement field, String label) {
+        String message = (String) js.executeScript("return arguments[0].validationMessage;", field);
+        System.out.println(label + " message: " + message);
+    }
+
+    // 🔍 Utility method to print error status
+    private static void printErrorStatus(WebDriverWait wait, WebDriver driver) {
+        WebElement errorMsg = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("error_status")));
+        System.out.println("Error message: " + errorMsg.getText());
+    }
+
+    // 🔍 Utility method to print all error messages
+    private static void printErrors(WebDriver driver, String testCase) {
+        System.out.println("=== " + testCase + " ===");
+        List<WebElement> errors = driver.findElements(By.xpath("//span[@class='error']"));
+        if (errors.isEmpty()) {
+            System.out.println("No validation errors found.");
+        } else {
+            for (WebElement e : errors) {
+                System.out.println("Validation message: " + e.getText());
+            }
+        }
+        System.out.println("============================\n");
+    }
+}

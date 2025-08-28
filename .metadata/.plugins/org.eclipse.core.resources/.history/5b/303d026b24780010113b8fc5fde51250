@@ -1,0 +1,73 @@
+package Maven_examples;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.time.Duration;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import Apputils.DBConnection;
+import io.github.bonigarcia.wdm.WebDriverManager;
+
+public class My_Contactform_Register_Users {
+
+    public static void main(String[] args) {
+        WebDriverManager.firefoxdriver().setup();
+
+        try (WebDriver driver = new FirefoxDriver();
+             Connection conn = DBConnection.getConnection()) {
+
+            System.out.println("✅ Database connected");
+
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT userid, password FROM UserLoginDetails");
+
+            while (rs.next()) {
+                String username = rs.getString("userid");
+                String password = rs.getString("password");
+
+                try {
+                    driver.navigate().to("https://www.mycontactform.com/index.php");
+                    System.out.printf("🌐 Opened login page for: %s%n", username);
+
+                    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+                    wait.until(ExpectedConditions.presenceOfElementLocated(By.name("user")));
+
+                    driver.findElement(By.name("user")).clear();
+                    driver.findElement(By.name("user")).sendKeys(username);
+
+                    driver.findElement(By.name("pass")).clear();
+                    driver.findElement(By.name("pass")).sendKeys(password);
+
+                    driver.findElement(By.name("btnSubmit")).click();
+
+                    Thread.sleep(3000); // Optional: replace with wait for post-login element
+
+                    System.out.printf("🔐 Tried login with: %s / %s%n", username, password);
+
+                    // Optional: check login success
+                    if (driver.getPageSource().contains("Logout")) {
+                        System.out.printf("✅ Login successful for: %s%n", username);
+                    } else {
+                        System.out.printf("⚠️ Login may have failed for: %s%n", username);
+                    }
+
+                } catch (Exception e) {
+                    System.out.printf("❌ Login failed for user: %s%n", username);
+                    e.printStackTrace();
+                }
+            }
+
+            rs.close();
+            stmt.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}

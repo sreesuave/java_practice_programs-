@@ -1,0 +1,79 @@
+package Maven_examples;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+public class Sql_Write {
+
+	public static void main(String[] args) {
+		String url = "jdbc:mysql://localhost:3306/test_db";
+		// String url = "jdbc:mysql://localhost:3306/your_database_name"; 
+	        String username = "root"; 
+	        String dbpassword = "admin"; 
+
+	        try {
+	            // 1. Connect to database
+	            Connection conn = DriverManager.getConnection(url, username, dbpassword);
+	            System.out.println("Database connected");
+	            
+	           /* Statement stmt = conn.createStatement();
+
+	            // 3. Execute query
+	            String sql = "SELECT userid, password FROM UserLoginDetails";
+	            ResultSet rs = stmt.executeQuery(sql);
+
+	            // 4. Loop through results
+	            while (rs.next()) {
+	                String userid = rs.getString("userid");
+	                String password = rs.getString("password");
+	                System.out.println("UserID: " + userid + " | Password: " + password);
+	            }
+
+	            // 5. Close resources
+	            rs.close();
+	            stmt.close();
+	            conn.close();*/
+	            // 2. Prepare insert statement
+	            String sql = "INSERT INTO UserLoginDetails (userid, password) VALUES (?, ?)";
+	            PreparedStatement stmt = conn.prepareStatement(sql);
+
+	            // 3. Set values for one record
+	            stmt.setString(1, "new_user1");
+	            stmt.setString(2, "securePass123");
+
+	            // 4. Execute
+	            int rowsInserted = stmt.executeUpdate();
+	            if (rowsInserted > 0) {
+	                System.out.println("One record inserted successfully.");
+	            }
+
+	            // 5. Close resources
+	            stmt.close();
+	            conn.close();
+	            Statement stmt = conn.createStatement();
+
+	            // 3. Execute query
+	            String sql1 = "SELECT userid, password FROM UserLoginDetails";
+	            ResultSet rs = stmt.executeQuery(sql);
+
+	            // 4. Loop through results
+	            while (rs.next()) {
+	                String userid = rs.getString("userid");
+	                String password = rs.getString("password");
+	                System.out.println("UserID: " + userid + " | Password: " + password);
+	            }
+
+	            // 5. Close resources
+	            rs.close();
+	            stmt.close();
+	            conn.close();
+
+	        } catch (Exception e) {
+	                e.printStackTrace();
+	            }
+	}
+
+}

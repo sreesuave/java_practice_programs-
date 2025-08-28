@@ -1,0 +1,61 @@
+package Maven_examples;
+
+import java.sql.DriverManager;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.firefox.FirefoxDriver;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
+
+public class Parabank_Ex {
+
+	public static void main(String[] args) {
+		
+			
+		
+WebDriverManager.firefoxdriver().setup();
+System.out.println("driver set up done");
+WebDriver driver = new FirefoxDriver();
+driver.navigate().to("https://parabank.parasoft.com/parabank/register.htm");
+
+System.out.println(driver.getTitle());
+WebElement Firstname = driver.findElement(By.xpath("//*[@id='customer.firstName']"));
+Firstname.sendKeys("sridhar");
+
+WebElement Lastname = driver.findElement(By.xpath("//*[@id='customer.lastName']"));
+Lastname.sendKeys("ch");
+WebElement Address = driver.findElement(By.xpath("//*[@id=\"customer.address.street\"]"));
+Address.sendKeys("padmavathi gardens");
+WebElement Address_City = driver.findElement(By.xpath("//*[@id=\"customer.address.city\"]"));
+Address_City.sendKeys(" hyderabad");
+WebElement Address_State = driver.findElement(By.xpath("//*[@id=\"customer.address.state\"]"));
+Address_State.sendKeys("hyderabad");
+WebElement Zipcode = driver.findElement(By.xpath("//*[@id=\"customer.address.zipCode\"]"));
+Zipcode.sendKeys("500001");
+WebElement phone = driver.findElement(By.xpath("//*[@id=\"customer.phoneNumber\"]"));
+phone.sendKeys("9696966787");
+WebElement SSN = driver.findElement(By.xpath("//*[@id=\"customer.ssn\"]"));
+SSN.sendKeys("001");
+WebElement Username = driver.findElement(By.xpath("//*[@id=\"customer.username\"]"));
+Username.sendKeys("sridhar3445ce");
+WebElement password = driver.findElement(By.xpath("//*[@id=\"customer.password\"]"));
+password.sendKeys("#sre123");
+WebElement Confirm_password = driver.findElement(By.xpath("//*[@id=\"repeatedPassword\"]"));
+Confirm_password.sendKeys("#sre123");
+WebElement submit = driver.findElement(By.xpath("//input[@type='submit' and @value='Register']"));
+
+
+submit.click();
+WebElement UserName = driver.findElement(By.name("username"));
+UserName.sendKeys("sridhar3445ce");
+WebElement Password = driver.findElement(By.name("password"));
+Password.sendKeys("#sre123\"");
+WebElement loginButton = driver.findElement(By.xpath("//input[@value='Log In']"));
+loginButton.click();
+
+		//driver.close();
+	}
+
+}

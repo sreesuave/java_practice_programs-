@@ -1,0 +1,55 @@
+package Maven_examples;
+
+import org.openqa.selenium.*;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.*;
+
+import java.time.Duration;
+
+public class contact_rental_ex {
+    public static void main(String[] args) {
+        WebDriver driver = new FirefoxDriver();
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+        driver.get("https://www.mycontactform.com/samples/rental.php");
+
+        try {
+            // ❌ Invalid input in First Name (e.g., numbers)
+            WebElement firstName = driver.findElement(By.name("q1_first_name"));
+            firstName.clear();
+            firstName.sendKeys("1234");
+
+            // 🔘 Leave "Smoker?" radio buttons unselected
+            System.out.println("No radio button selected for 'Smoker?'");
+
+            // ✅ Leave "Pets?" checkbox unchecked
+            WebElement petsCheckbox = driver.findElement(By.name("q20_pets[]"));
+            if (petsCheckbox.isSelected()) {
+                petsCheckbox.click();
+            }
+
+            // Submit the form
+            driver.findElement(By.name("submit")).click();
+
+            // Wait for validation errors
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+
+            // Capture and print validation errors
+            WebElement firstNameError = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//*[contains(text(),'First name')]")));
+            System.out.println("First name error: " + firstNameError.getText());
+
+            WebElement smokerError = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//*[contains(text(),'Smoker')]")));
+            System.out.println("Smoker radio button error: " + smokerError.getText());
+
+            WebElement petsError = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//*[contains(text(),'Pets')]")));
+            System.out.println("Pets checkbox error: " + petsError.getText());
+
+        } catch (Exception e) {
+            System.out.println("Validation error not found or unexpected issue: " + e.getMessage());
+        } finally {
+            driver.quit();
+        }
+    }
+}

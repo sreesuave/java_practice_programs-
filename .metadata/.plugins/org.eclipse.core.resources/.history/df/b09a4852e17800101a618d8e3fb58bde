@@ -1,0 +1,47 @@
+package Maven_examples;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import io.github.bonigarcia.wdm.WebDriverManager;
+
+import java.time.Duration;
+import java.util.List;
+
+public class RentalFormErrorMessageSimple {
+    public static void main(String[] args) {
+        WebDriverManager.firefoxdriver().setup();
+        WebDriver driver = new FirefoxDriver();
+        driver.get("https://www.mycontactform.com/samples/rental.php");
+
+        // Submit the form without filling any fields
+        driver.findElement(By.name("email")).sendKeys("abc@");
+        driver.findElement(By.name("submit")).click();
+
+        WebElement emailError = driver.findElement(By.xpath("//div[@id='content']//li[contains(text(),'e-mail address')]"));
+        System.out.println("Email validation error:");
+        System.out.println(emailError.getText());
+
+
+        try {
+            // Wait for the content div to be visible
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+            WebElement contentDiv = wait.until(
+                ExpectedConditions.visibilityOfElementLocated(By.id("content"))
+            );
+
+            // Find all top-level <li> elements inside the content div
+            List<WebElement> errorItems = contentDiv.findElements(By.xpath(".//ul/li[not(@class='sub')]"));
+
+            System.out.println("Error messages:");
+            for (WebElement item : errorItems) {
+                System.out.println("- " + item.getText());
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error messages not found or page structure changed.");
+        } driver.quit();
+    }
+}

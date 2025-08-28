@@ -1,0 +1,49 @@
+package Maven_examples;
+
+import org.openqa.selenium.*;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.*;
+
+import java.time.Duration;
+
+public class contact_rental_ex {
+    public static void main(String[] args) {
+        WebDriver driver = new FirefoxDriver();
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+        driver.get("https://www.mycontactform.com/samples/rental.php");
+
+        try {
+            // ❌ Invalid input in First Name (numbers instead of letters)
+            WebElement firstName = driver.findElement(By.name("q1"));
+            firstName.clear();
+            firstName.sendKeys("1234");
+
+            // 🔘 Leave "Smoker?" radio buttons unselected
+            System.out.println("No radio button selected for 'Smoker?'");
+
+            // ✅ Leave "Pets?" checkbox unchecked
+            WebElement petsCheckbox = driver.findElement(By.name("q20[]"));
+            if (petsCheckbox.isSelected()) {
+                petsCheckbox.click();
+            }
+
+            // Submit the form
+            driver.findElement(By.name("submit")).click();
+
+            // Wait for validation errors
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+
+            // Capture and print validation errors
+            WebElement errorBox = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//div[@id='error_box']")));
+
+            System.out.println("Validation errors:");
+            System.out.println(errorBox.getText());
+
+        } catch (Exception e) {
+            System.out.println("Validation error not found or unexpected issue: " + e.getMessage());
+        } finally {
+            driver.quit();
+        }
+    }
+}

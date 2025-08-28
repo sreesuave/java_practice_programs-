@@ -1,0 +1,102 @@
+package Maven_examples;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.firefox.FirefoxDriver;
+
+import Apputils.DBConnection;
+import io.github.bonigarcia.wdm.WebDriverManager;
+
+public class My_Contactform_Register_Users {
+
+    public static void main(String[] args) {
+        WebDriverManager.firefoxdriver().setup();
+        WebDriver driver = new FirefoxDriver();
+
+        try (Connection conn = DBConnection.getConnection()) {
+            System.out.println("Database connected");
+
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT userid, password FROM UserLoginDetails");
+
+            while (rs.next()) {
+                String username = rs.getString("userid");
+                String password = rs.getString("password");
+
+                // Go to login page for each user
+                driver.navigate().to("https://www.mycontactform.com/index.php");
+               // System.out.println("Opened login page for: " + username);
+
+                driver.findElement(By.name("user")).clear();
+                driver.findElement(By.name("user")).sendKeys(username);
+
+                driver.findElement(By.name("pass")).clear();
+                driver.findElement(By.name("pass")).sendKeys(password);
+                
+
+                driver.findElement(By.name("btnSubmit")).click();
+                
+                
+                
+                
+                
+                // Check for error messages
+                driver.findElement(By.name("btnSubmit")).click();
+               
+
+                // Check for error messages
+                java.util.List<WebElement> errorMsgs = driver.findElements(By.xpath("//span[@class='error']"));
+
+                // Check user bar for successful login
+                java.util.List<WebElement> userBar = driver.findElements(By.xpath("//*[@id='user_bar']/ul/li[1]/a"));
+
+                if (!errorMsgs.isEmpty()) {
+                    System.out.println("User: " + username + " | Password: " + password + " | Result: Invalid credentials");
+                } else if (!userBar.isEmpty()) {
+                    System.out.println("User: " + username + " | Password: " + password + " | Result: Login success");
+                    
+                    // Logout after success
+                    userBar.get(0).click();
+                } else {
+                    // Fallback if neither is found
+                    System.out.println("User: " + username + " | Password: " + password + " | Result: No message found");
+                }
+
+                
+                
+                
+                
+                
+                
+                
+               /* Thread.sleep(3000);
+                
+                java.util.List<WebElement> logoutBtns = driver.findElements(By.xpath("//*[@id=\"user_bar\"]/ul/li[1]/a"));
+                if (!logoutBtns.isEmpty()) {
+                    logoutBtns.get(0).click();
+                    //System.out.println("Logged out successfully for: " + username);
+                }
+Thread.sleep(3000);*/
+
+               // System.out.println("Tried login with: " + username + " / " + password);
+                
+            
+           
+        	   
+        	   }
+
+            rs.close();
+            stmt.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            driver.quit();
+        }
+    }
+}

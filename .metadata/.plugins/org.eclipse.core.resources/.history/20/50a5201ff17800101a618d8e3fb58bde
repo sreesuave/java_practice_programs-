@@ -1,0 +1,66 @@
+package Maven_examples;
+
+import org.openqa.selenium.*;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.*;
+
+import java.time.Duration;
+
+public class contact_rental_ex{
+    public static void main(String[] args) {
+        WebDriver driver = new ChromeDriver();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        try {
+            driver.get("https://www.mycontactform.com/samples/rental.php");
+            driver.manage().window().maximize();
+
+            // Text fields
+            driver.findElement(By.name("q1")).sendKeys("Mr.");
+            driver.findElement(By.name("q2")).sendKeys("SREE");
+            driver.findElement(By.name("q3")).sendKeys("Kumar");
+            driver.findElement(By.name("q4")).sendKeys("sree@example.com");
+            driver.findElement(By.name("q5")).sendKeys("9876543210");
+
+            // Radio buttons
+            driver.findElement(By.cssSelector("input[name='q6'][value='Yes']")).click(); // Smoker
+            driver.findElement(By.cssSelector("input[name='q7'][value='Phone']")).click(); // Preferred Contact Method
+            driver.findElement(By.cssSelector("input[name='q8'][value='Morning']")).click(); // Preferred Contact Time
+
+            // Dropdowns
+            new Select(driver.findElement(By.name("q9"))).selectByVisibleText("Apartment"); // Preferred Property Type
+            new Select(driver.findElement(By.name("q10"))).selectByVisibleText("Condo"); // Alternate Property Type
+            new Select(driver.findElement(By.name("q11"))).selectByVisibleText("2"); // Bedrooms
+            new Select(driver.findElement(By.name("q12"))).selectByVisibleText("1.5"); // Bathrooms
+
+            // Checkboxes
+            driver.findElement(By.cssSelector("input[name='q13'][value='Dog']")).click();
+            driver.findElement(By.cssSelector("input[name='q13'][value='Cat']")).click();
+
+            // Date picker
+            driver.findElement(By.name("q14")).sendKeys("08/31/2025");
+
+            // Numeric fields
+            driver.findElement(By.name("q15")).sendKeys("10000"); // Price Range
+            driver.findElement(By.name("q16")).sendKeys("1200");  // Square Footage
+
+            // Preferred Area
+            driver.findElement(By.name("q17")).sendKeys("Hyderabad");
+
+            // Comments
+            driver.findElement(By.name("q18")).sendKeys("Looking for a quiet neighborhood with good amenities.");
+
+            // Submit
+            driver.findElement(By.name("submit")).click();
+
+            // Confirmation
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.tagName("body")));
+            System.out.println("Form submitted successfully!");
+
+        } catch (Exception e) {
+            System.out.println("Error during form submission: " + e.getMessage());
+        } finally {
+            driver.quit();
+        }
+    }
+}

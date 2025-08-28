@@ -1,0 +1,4 @@
+INDEX VERSION 1.134+D:\java_Selinium\maven_projects\Maven_examples\.metadata\.plugins\org.eclipse.jdt.core
+2779629487.index
+1865797976.index
+2549674085.index

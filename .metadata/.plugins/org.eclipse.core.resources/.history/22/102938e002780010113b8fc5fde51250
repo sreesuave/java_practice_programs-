@@ -1,0 +1,23 @@
+package Maven_examples;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+
+public class Sql_Write {
+
+	public static void main(String[] args) {
+		String url = "jdbc:mysql://localhost:3306/test_db";
+		// String url = "jdbc:mysql://localhost:3306/your_database_name"; // Change DB name
+	        String username = "root"; 
+	        String password = "admin"; 
+
+	        try {
+	            // 1. Connect to database
+	            Connection conn = DriverManager.getConnection(url, username, password);
+	            System.out.println("Database connected");
+	        } catch (Exception e) {
+	                e.printStackTrace();
+	            }
+	}
+
+}

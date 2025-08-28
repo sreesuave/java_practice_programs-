@@ -1,0 +1,73 @@
+package Maven_examples;
+
+import org.openqa.selenium.*;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.*;
+import io.github.bonigarcia.wdm.WebDriverManager;
+
+import java.time.Duration;
+
+public class contact_rental_ex {
+    public static void main(String[] args) {
+        WebDriverManager.firefoxdriver().setup();
+        WebDriver driver = new FirefoxDriver();
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+
+        try {
+            driver.get("https://www.mycontactform.com/samples/rental.php");
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+            // First Name
+            WebElement firstName = wait.until(
+                ExpectedConditions.visibilityOfElementLocated(By.xpath("//input[@name='q1']"))
+            );
+            firstName.clear();
+            firstName.sendKeys("1234");
+            System.out.println("Entered invalid first name");
+
+            // Last Name (optional to trigger more validation)
+            WebElement lastName = driver.findElement(By.xpath("//input[@name='q2']"));
+            lastName.clear();
+            System.out.println("Last Name left empty");
+
+            // Email
+            WebElement emailField = driver.findElement(By.xpath("//input[@name='email']"));
+            emailField.clear();
+            System.out.println("Email left empty");
+
+            // Pets? - Ensure "No" (unchecked state) is selected or leave blank
+            WebElement petsNo = driver.findElement(
+                By.xpath("//input[@name='q20[]' and @value='No']")
+            );
+            if (!petsNo.isSelected()) {
+                petsNo.click();
+            }
+            System.out.println("Selected 'No' for Pets");
+
+            // Smoker? - Sample for "No"
+            WebElement smokerNo = driver.findElement(
+                By.xpath("//input[@name='q21' and @value='No']")
+            );
+            if (!smokerNo.isSelected()) {
+                smokerNo.click();
+            }
+            System.out.println("Selected 'No' for Smoker");
+
+            // Submit button
+            WebElement submitButton = driver.findElement(By.xpath("//input[@name='submit']"));
+            submitButton.click();
+            System.out.println("Form submitted");
+
+            // Wait and print validation errors
+            WebElement errorBox = wait.until(
+                ExpectedConditions.presenceOfElementLocated(By.id("error_box"))
+            );
+            System.out.println("Validation errors:\n" + errorBox.getText());
+
+        } catch (Exception e) {
+            System.out.println("Issue: " + e.getMessage());
+        } finally {
+            driver.quit();
+        }
+    }
+}
